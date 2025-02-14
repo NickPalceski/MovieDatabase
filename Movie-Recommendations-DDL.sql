@@ -7,6 +7,7 @@ title varchar(50),
 director varchar(50),
 producer varchar(50),
 genre varchar(20),
+rating varchar(10),
 duration numeric(3,0),
 tomato_rating numeric (5,2),
 release_date date);
