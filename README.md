@@ -1,5 +1,4 @@
 # Movie Recommendations Database
-### Data Engineering Spring 2025
 
 Authors: Connor Plonka, Nicolas Palceski, Daniel Lowry (Team 11)
 
@@ -11,10 +10,10 @@ The purpose of this database to allow users to search for movies according to th
 
 # Other
 
-Software Used: PostgreSQL
-Course: Intro to Data Engineering
-Semester: Spring 2025
-Course ID: COP 3710
-CRN: 14033
+Software Used: PostgreSQL\
+Course: Intro to Data Engineering\
+Semester: Spring 2025\
+Course ID: COP 3710\
+CRN: 14033\
 Professor: Dr. Vinod Ahuja
 
