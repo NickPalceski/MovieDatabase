@@ -3,8 +3,8 @@
 --General Information on Movie
 CREATE TABLE movie(
 movie_id SERIAL PRIMARY KEY,
-title varchar(50),
-genre varchar(20),
+title varchar(500),
+genre varchar(500),
 duration numeric(3,0),
 release_date date);
 
@@ -20,9 +20,9 @@ FOREIGN KEY (movie_id) REFERENCES movie(movie_id) ON DELETE CASCADE
 CREATE TABLE production(
 production_id SERIAL PRIMARY KEY,
 movie_id INT,
-director varchar(50) NOT NULL,
-producer varchar(50) NOT NULL,
-screenwriter varchar(50),
+director varchar(500) NOT NULL,
+producer varchar(500) NOT NULL,
+screenwriter varchar(500),
 FOREIGN KEY (movie_id) REFERENCES movie(movie_id) ON DELETE CASCADE
 );
 
