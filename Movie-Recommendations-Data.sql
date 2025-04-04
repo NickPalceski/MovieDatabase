@@ -201,7 +201,6 @@ INSERT INTO movie (title, genre, duration, release_date) VALUES ('Rab Ne Bana Di
 INSERT INTO movie (title, genre, duration, release_date) VALUES ('The Proposal', 'Comedy, Romance', 107, 2009-06-19);
 INSERT INTO movie (title, genre, duration, release_date) VALUES ('Gigantic', 'Comedy, Romance', 99, 2009-04-03);
 INSERT INTO movie (title, genre, duration, release_date) VALUES ('Fuel', 'Documentary, Special Interest', 111, 2008-10-17);
-INSERT INTO movie (title, genre, duration, release_date) VALUES ('Hush', 'Mystery & Suspense', 88, 2009-02-01);
 INSERT INTO movie (title, genre, duration, release_date) VALUES ('Anna Karenina', 'Classics, Drama, Romance', 94, 1935-01-01);
 INSERT INTO movie (title, genre, duration, release_date) VALUES ('Orphan', 'Drama, Horror, Mystery & Suspense', 123, 2009-07-24);
 INSERT INTO movie (title, genre, duration, release_date) VALUES ('My Sister''s Keeper', 'Drama', 110, 2009-06-26);
@@ -1674,7 +1673,6 @@ INSERT INTO reception (movie_id, tomato_rating) VALUES ((SELECT movie_id FROM mo
 INSERT INTO reception (movie_id, tomato_rating) VALUES ((SELECT movie_id FROM movie WHERE title = 'The Proposal'), 44);
 INSERT INTO reception (movie_id, tomato_rating) VALUES ((SELECT movie_id FROM movie WHERE title = 'Gigantic'), 36);
 INSERT INTO reception (movie_id, tomato_rating) VALUES ((SELECT movie_id FROM movie WHERE title = 'Fuel'), 72);
-INSERT INTO reception (movie_id, tomato_rating) VALUES ((SELECT movie_id FROM movie WHERE title = 'Hush'), 50);
 INSERT INTO reception (movie_id, tomato_rating) VALUES ((SELECT movie_id FROM movie WHERE title = 'Anna Karenina'), 100);
 INSERT INTO reception (movie_id, tomato_rating) VALUES ((SELECT movie_id FROM movie WHERE title = 'Orphan'), 56);
 INSERT INTO reception (movie_id, tomato_rating) VALUES ((SELECT movie_id FROM movie WHERE title = 'My Sister''s Keeper'), 48);
@@ -3147,7 +3145,6 @@ INSERT INTO production (movie_id, director, producer, screenwriter) VALUES ((SEL
 INSERT INTO production (movie_id, director, producer, screenwriter) VALUES ((SELECT movie_id FROM movie WHERE title = 'The Proposal'), 'Anne Fletcher', 'Walt Disney Pictures', 'Peter Chiarelli');
 INSERT INTO production (movie_id, director, producer, screenwriter) VALUES ((SELECT movie_id FROM movie WHERE title = 'Gigantic'), 'Matt Aselton', 'First Independent Pictures', 'Matt Aselton, Adam Nagata');
 INSERT INTO production (movie_id, director, producer, screenwriter) VALUES ((SELECT movie_id FROM movie WHERE title = 'Fuel'), 'Josh Tickell', 'Greenlight Theatrical', 'Johnny O''Hara');
-INSERT INTO production (movie_id, director, producer, screenwriter) VALUES ((SELECT movie_id FROM movie WHERE title = 'Hush'), 'Mark Tonderai', 'IFC Films', 'Mark Tonderai');
 INSERT INTO production (movie_id, director, producer, screenwriter) VALUES ((SELECT movie_id FROM movie WHERE title = 'Anna Karenina'), 'Clarence Brown', 'WARNER BROTHERS PICTURES', 'Clemence Dane, Salka Viertel, S.N. Behrmann');
 INSERT INTO production (movie_id, director, producer, screenwriter) VALUES ((SELECT movie_id FROM movie WHERE title = 'Orphan'), 'Jaume Collet-Serra', 'Warner Bros. Pictures', 'David Leslie Johnson-McGoldrick');
 INSERT INTO production (movie_id, director, producer, screenwriter) VALUES ((SELECT movie_id FROM movie WHERE title = 'My Sister''s Keeper'), '', 'Warner Bros. Pictures', '');
