@@ -50,24 +50,38 @@ $$ LANGUAGE plpgsql;
 -- 5.(Procedure) A moviegoer is interested in an action and/or adventure film. However,  Because of this, the movies listed must have at least 1 award accredited to them. 
 -- Additionally, the Rotten Tomato rating of the movie must be equal to or greater than 80. Output a list of all the movies that fit these specifications.
 
-CREATE OR REPLACE PROCEDURE genre_award_tomato_rating (IN genre_param varchar(50),  IN min_tomato_rating numeric(2,0), OUT movie_list TEXT)
+CREATE OR REPLACE PROCEDURE genre_city_time_rating (
+	IN user_genre varchar(50), 
+	IN user_city varchar(50), 
+	IN start_interval time, 
+	IN end_interval time, 
+	IN user_tomato_rating numeric(2,0), 
+	OUT movie_list TEXT
+)
 LANGUAGE plpgsql
 AS $$
-
+ 
 BEGIN
- 	SELECT STRING_AGG(m.title, ', ') -- Combine multiple movie titles into a single
+	SELECT STRING_AGG(m.title, ', ') -- Combine multiple movie titles into a single
 		string
-  INTO movie_list
- 	FROM movie m
-  JOIN miscellaneous misc ON m.movie_id = misc.movie_id
-  JOIN reception r ON m.movie_id = r.movie_id  -- Replace `production` with `reception` for tomato_rating
-  WHERE m.genre = genre_param
-    AND misc.award IS NOT NULL
-    AND r.tomato_rating >= min_tomato_rating;
+    	INTO movie_list
+	FROM movie m
+ 
+ 
+    	JOIN reception r ON m.movie_id = r.movie_id 
+  	JOIN plays p ON m.movie_id = p.movie_id
+	JOIN location l ON p.location_id = l.location_id
+ 
+ 
+    	WHERE m.genre like user_genre
+      	AND l.city = user_city
+	AND p.time_slot BETWEEN start_interval AND end_interval
+      	AND r.tomato_rating >= user_tomato_rating;
 END;
-
+$$;
+ 
 	-- Example Execution
-  CALL genre_rating_tomato_rating(‘Action & Adventure’, 80, NULL);
+CALL genre_city_time_rating('%Action & Adventure%', 'San Diego', '10:30:00', '18:45:00', 50, null);
 
 
 -- 6. Transaction) Movies are added to the dataset in groups of 50. Unfortunately, there was an error when inputting new movies into the “movie” table of the database. 
