@@ -4,14 +4,14 @@
 
 SELECT  *
 FROM movie
-WHERE release_date BETWEEN CURRENT_DATE - INTERVAL ‘6 weeks’ AND CURRENT_DATE;
+WHERE release_date BETWEEN CURRENT_DATE - INTERVAL '6 years' AND CURRENT_DATE;
 
 
 -- 2. (Projection) A user wants to find basic movie information (name, genre, release date) of movies that were made in the last ten years. Find all movies that were made from 2015 onward.
 
 SELECT title, genre, release_date
 FROM movie
-WHERE release_date BETWEEN '2015-01-01' AND ‘2025-03-18’;
+WHERE release_date BETWEEN '2015-01-01' AND '2025-03-18';
 
 
 -- 3. (Joins) A user wants to know the Rotten Tomato ratings associated with each movie when making their decision of which movie to watch. 
@@ -34,9 +34,8 @@ BEGIN
 			SELECT COUNT(*) INTO dir_gen_count
 			FROM MOVIE
 			JOIN production ON movie.movie_id = production.movie_id
-			WHERE production.director = $1-- First parameter (fixes ambiguous 
-			error)
-AND movie.genre = $2; -- Second parameter (fixes ambiguous error)
+			WHERE production.director = $1-- First parameter (fixes ambiguous error)
+AND movie.genre like $2; -- Second parameter (fixes ambiguous error)
 
 RETURN dir_gen_count;
 END;
@@ -44,13 +43,11 @@ $$ LANGUAGE plpgsql;
 
 
 	-- Example select statement
-	SELECT director_genre_count(‘Clint Eastwood’, ‘Drama’)
+	SELECT director_genre_count('Clint Eastwood', '%Drama%')
 
 
--- 5. (Procedure) A moviegoer is interested in an action/adventure film. Additionally, they need the movie to be played in their city between a certain time interval. 
--- And they also want to see a high quality movie, so the Rotten Tomato rating of the movie must be equal to or greater than 90. 
--- Output a list of all the movies that fit these specifications.
-
+-- 5.(Procedure) A moviegoer is interested in an action and/or adventure film. However,  Because of this, the movies listed must have at least 1 award accredited to them. 
+-- Additionally, the Rotten Tomato rating of the movie must be equal to or greater than 80. Output a list of all the movies that fit these specifications.
 
 CREATE OR REPLACE PROCEDURE genre_city_time_rating (
 	IN user_genre varchar(50), 
@@ -62,27 +59,28 @@ CREATE OR REPLACE PROCEDURE genre_city_time_rating (
 )
 LANGUAGE plpgsql
 AS $$
-
+ 
 BEGIN
- 	SELECT STRING_AGG(m.title, ', ') -- Combine multiple movie titles into a single
+	SELECT STRING_AGG(m.title, ', ') -- Combine multiple movie titles into a single
 		string
     	INTO movie_list
- 	FROM movie m
-
-
+	FROM movie m
+ 
+ 
     	JOIN reception r ON m.movie_id = r.movie_id 
   	JOIN plays p ON m.movie_id = p.movie_id
 	JOIN location l ON p.location_id = l.location_id
-
-
+ 
+ 
     	WHERE m.genre like user_genre
       	AND l.city = user_city
 	AND p.time_slot BETWEEN start_interval AND end_interval
       	AND r.tomato_rating >= user_tomato_rating;
 END;
-
+$$;
+ 
 	-- Example Execution
-CALL genre_city_time_rating(‘%Action & Adventure%’, ‘San Diego’, ‘10:30:00’, ‘18:45:00’, 90, null);
+CALL genre_city_time_rating('%Action & Adventure%', 'San Diego', '10:30:00', '18:45:00', 50, null);
 
 
 -- 6. Transaction) Movies are added to the dataset in groups of 50. Unfortunately, there was an error when inputting new movies into the “movie” table of the database. 
@@ -159,7 +157,7 @@ CREATE INDEX idx_genre_hrm ON highly_rated_movies(genre);
 -- Write an SQL query that calculates the average Rotten Tomato score of a director’s movie across three different genres. 
 -- The output must be ordered in ascending order. Also, write an example of a function call with a director and genres of your choice.
 
-CREATE OR REPLACE FUNCTION director_avg_rating (director varchar(50), genre1 varchar(20), genre2 varchar(20), genre3 varchar(20))
+CREATE OR REPLACE FUNCTION director_avg_rating (director varchar(50), genre1 varchar(50), genre2 varchar(50), genre3 varchar(50))
 RETURNS TABLE (genre varchar(20), avg_rt_score numeric(2,0)) AS $$ -- 2 columns, genre and avg rotten tomato score. 										
 
 BEGIN
@@ -170,7 +168,9 @@ BEGIN
 		JOIN reception r ON m.movie_id = r.movie_id
 		JOIN production p ON m.movie_id = p.movie_id
 		WHERE p.director = $1   -- director parameter
-		AND m.genre IN (genre1, genre2, genre3)
+		AND (m.genre LIKE genre1
+			 OR m.genre LIKE genre2
+			 OR m.genre LIKE genre3)
 
 		GROUP BY m.genre
 		ORDER BY avg_rt_score ASC;
@@ -181,17 +181,17 @@ $$ LANGUAGE plpgsql;
 
 -- Example Function Call
 SELECT *
-FROM director_avg_rating(‘Steven Speilberg’, ‘Action & Adventure’, ‘Science Fiction & Fantasy’, ‘Drama’);
+FROM director_avg_rating('Steven Spielberg', '%Action & Adventure%', '%Science Fiction & Fantasy%', '%Drama%');
 
 
--- 10. (Recursion) A moviegoer is a big fan of the Star Wars series. Thus, they want to view all of the movies that fall under the Star Wars franchise. 
--- Write an SQL query that outputs all the movies in the Star Wars series.
+-- 10. (Recursion) A moviegoer is a big fan of the 101 Dalmatians series. Thus, they want to view all of the movies that fall under the 101 Dalmatians franchise. 
+-- Write an SQL query that outputs all the movies in the 101 Dalmatians series.
 
 WITH RECURSIVE movies_in_series AS (
     SELECT movie_id, title, genre, duration, release_date
     FROM movie
-    WHERE title LIKE ‘Star Wars%’
-UNION ALL
+    WHERE title LIKE '101 Dalmatians%'
+	UNION
 		SELECT m.movie_id, m.title, m.genre, m.duration, m.release_date
 		FROM movie m
 		JOIN movies_in_series mis ON  m.movie_id = mis.movie_id
